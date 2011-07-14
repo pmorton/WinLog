@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="c9ef65f0-5d9b-43ac-91b6-173d3975bcaf" Name="WinLogInstaller" Language="1033" Version="1.0.0.0" Manufacturer="WinLogInstaller" UpgradeCode="a4ea4e57-a219-4a11-bea4-743e44c683c5">
+	<Product Id="c9ef65f0-5d9b-43ac-91b6-173d3975bcaf" Name="WinLog" Language="1033" Version="1.0.0.0" Manufacturer="Paul Morton" UpgradeCode="a4ea4e57-a219-4a11-bea4-743e44c683c5">
 		<Package InstallerVersion="200" Compressed="yes" />
 
 		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
@@ -12,6 +12,7 @@
               <File Id="NLog.dll" Name="NLog.dll" Source="..\Output\Release\NLog.dll" Vital="yes" KeyPath="no" DiskId="1"/>
               <File Id="NLog.config" Name="NLog.config" Source="..\Output\Release\NLog.config" Vital="yes" KeyPath="no" DiskId="1"/>
               <File Id="NLog.Targets.Syslog.dll" Name="NLog.Targets.Syslog.dll" Source="..\Output\Release\NLog.Targets.Syslog.dll" Vital="yes" KeyPath="no" DiskId="1"/>
+              <File Id="Newtonsoft.Json.Net35.dll" Name="Newtonsoft.Json.Net35.dll" Source="..\Output\Release\Newtonsoft.Json.Net35.dll" Vital="yes" KeyPath="no" DiskId="1"/>
               <File Id="winlog2.exe.config" Name="winlog.exe.config" Source="..\Output\Release\winlog.exe.config" Vital="yes" KeyPath="no" DiskId="1"/>
               <File Id="winlog2.exe" Name="winlog.exe" Source="..\Output\Release\winlog.exe" Vital="yes" KeyPath="yes" DiskId="1"/>
               <ServiceInstall

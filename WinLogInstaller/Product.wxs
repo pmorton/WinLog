@@ -1,34 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!-- Product name as you want it to appear in Add/Remove Programs-->
+  <?if $(var.Platform) = x64 ?>
+  <?define ProductName = "WinLog (64 bit)" ?>
+  <?define Win64 = "yes" ?>
+  <?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+  <?else ?>
+  <?define ProductName = "WinLog" ?>
+  <?define Win64 = "no" ?>
+  <?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+  <?endif ?>
+  
 	<Product Id="c9ef65f0-5d9b-43ac-91b6-173d3975bcaf" Name="WinLog" Language="1033" Version="1.0.0.0" Manufacturer="Paul Morton" UpgradeCode="a4ea4e57-a219-4a11-bea4-743e44c683c5">
-		<Package InstallerVersion="200" Compressed="yes" />
+    <Package InstallerVersion="200" InstallPrivileges="elevated"
+           InstallScope="perMachine" Platform="$(var.Platform)"
+           Compressed="yes" Description="$(var.ProductName)" />
 
 		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
+    
+
+    <Property Id="INSTALLLOCATION">
+      <RegistrySearch Id="RegistrySearch" Type="raw" Root="HKLM" Win64="$(var.Win64)"
+                Key="Software\PEM\WinLog" Name="InstallLocation" />
+    </Property>
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="$(var.PlatformProgramFilesFolder)">
 				<Directory Id="INSTALLLOCATION" Name="WinLog">
             <Component Id="WinLogService" Guid="{908B7199-DE2A-4dc6-A8D0-27A5AE444FEA}">
-              <File Id="NLog.dll" Name="NLog.dll" Source="..\Output\Release\NLog.dll" Vital="yes" KeyPath="no" DiskId="1"/>
-              <File Id="NLog.config" Name="NLog.config" Source="..\Output\Release\NLog.config" Vital="yes" KeyPath="no" DiskId="1"/>
-              <File Id="NLog.Targets.Syslog.dll" Name="NLog.Targets.Syslog.dll" Source="..\Output\Release\NLog.Targets.Syslog.dll" Vital="yes" KeyPath="no" DiskId="1"/>
-              <File Id="Newtonsoft.Json.Net35.dll" Name="Newtonsoft.Json.Net35.dll" Source="..\Output\Release\Newtonsoft.Json.Net35.dll" Vital="yes" KeyPath="no" DiskId="1"/>
-              <File Id="winlog2.exe.config" Name="winlog.exe.config" Source="..\Output\Release\winlog.exe.config" Vital="yes" KeyPath="no" DiskId="1"/>
-              <File Id="winlog2.exe" Name="winlog.exe" Source="..\Output\Release\winlog.exe" Vital="yes" KeyPath="yes" DiskId="1"/>
+              <File Id="NLog.dll" Name="NLog.dll" Source="..\Output\$(var.Configuration)\NLog.dll" Vital="yes" KeyPath="no" DiskId="1"/>
+              <File Id="NLog.config" Name="NLog.config" Source="..\Output\$(var.Configuration)\NLog.config" Vital="yes" KeyPath="no" DiskId="1"/>
+              <File Id="Newtonsoft.Json.Net35.dll" Name="Newtonsoft.Json.Net35.dll" Source="..\Output\$(var.Configuration)\Newtonsoft.Json.Net35.dll" Vital="yes" KeyPath="no" DiskId="1"/>
+              <File Id="winlog2.exe.config" Name="winlog.exe.config" Source="..\Output\$(var.Configuration)\winlog.exe.config" Vital="yes" KeyPath="no" DiskId="1"/>
+              <File Id="winlog2.exe" Name="winlog.exe" Source="..\Output\$(var.Configuration)\winlog.exe" Vital="yes" KeyPath="yes" DiskId="1"/>
               <ServiceInstall
                 Id="ServiceInstaller"
                 Type="ownProcess"
                 Vital="yes"
-                Name="WindLog"
-                DisplayName="Windows Syslog Sender"
-                Description="Monitors Event Logs for Syslog Messages"
+                Name="WinLog"
+                DisplayName="Windows Logs Sender"
+                Description="Monitors event logs and sends to remote destinations"
                 Start="auto"
                 Account="LocalSystem"
                 ErrorControl="ignore"
                 Interactive="no"
               >
               </ServiceInstall>
-              <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="WindLog" Wait="yes" />
+              <ServiceControl Id="StartService" Start="install" Stop="both" Remove="uninstall" Name="WinLog" Wait="yes" />
             </Component>
 				</Directory>
 			</Directory>

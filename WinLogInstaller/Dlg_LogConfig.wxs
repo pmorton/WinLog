@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment Id="Dlg_LogConfig">
+    <UI>
+    <Dialog Id="Dlg_LogConfig" Width="370" Height="270" Title="Logging Configuration">
+      <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="!(loc.WixUINext)">
+        <Condition Action="enable">LocalChecked = "1" OR PTChecked = "1"</Condition>
+        <Condition Action="disable"><![CDATA[LocalChecked <> "1" AND PTChecked <> "1" ]]></Condition>
+      </Control>
+      <Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="!(loc.WixUICancel)"></Control>
+      <Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes" Text="Configure your logging settings below" />
+      <Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes" Text="Logging Configuration" />
+      <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.InstallDirDlgBannerBitmap)" />
+      <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
+      <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+      <Control Type="CheckBox" Id="LogLocalCheck" Width="11" Height="17" X="30" Y="64" Property="LocalChecked" CheckBoxValue="1" />
+      <Control Type="Text" Id="LogLocalLabel" Width="134" Height="13" X="45" Y="68">
+        <Text>Log to a local syslog server</Text>
+      </Control>
+      <Control Type="Edit" Id="LocalSyslogServerEdit" Width="106" Height="15" X="116" Y="86" Text="127.0.0.1" Property="LocalSyslogServer">
+        <Condition Action="enable">LocalChecked = "1"</Condition>
+        <Condition Action="disable"><![CDATA[LocalChecked <> "1" ]]></Condition>
+      </Control>
+      <Control Type="Edit" Id="LocalSyslogServerPort" Width="50" Height="15" X="262" Y="86" Text="514" Property="LocalSyslogPort">
+        <Condition Action="enable">LocalChecked = "1"</Condition>
+        <Condition Action="disable"><![CDATA[LocalChecked <> "1" ]]></Condition>
+      </Control>
+      <Control Type="Text" Id="ServerAddressLabel" Width="63" Height="17" X="45" Y="90">
+        <Text>Server Address</Text>
+      </Control>
+      <Control Type="Text" Id="ServerPortLabel" Width="23" Height="17" X="232" Y="90">
+        <Text>Port</Text>
+      </Control>
+      <Control Type="CheckBox" Id="LogPTCheck" Width="15" Height="17" X="30" Y="116" Property="PTChecked" CheckBoxValue="1"  />
+      <Control Type="Text" Id="LogPTLabel" Width="125" Height="17" X="49" Y="120">
+        <Text>Log to PaperTrail</Text>
+      </Control>
+      <Control Type="Text" Id="PTPortLabel" Width="19" Height="17" X="75" Y="158">
+        <Text>Port</Text>
+      </Control>
+      <Control Type="Edit" Id="PTPort" Width="50" Height="15" X="105" Y="158" Text="514" Property="PaperTrailPort">
+        <Condition Action="enable">PTChecked = "1"</Condition>
+        <Condition Action="disable"><![CDATA[PTChecked <> "1" ]]></Condition>
+      </Control>
+      <Control Type="Text" Id="PTBanner" Width="220" Height="17" X="75" Y="135">
+        <Text>Visit http://www.papertrailapp.com to get started for free</Text>
+      </Control>
+    </Dialog>
+    </UI>
+	</Fragment>
+</Wix>

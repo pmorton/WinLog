@@ -26,10 +26,11 @@
                 <Directory Id="INSTALLLOCATION" Name="WinLog">
                     <Component Id="WinLogService" Guid="{908B7199-DE2A-4dc6-A8D0-27A5AE444FEA}">
                         <File Id="NLog.dll" Name="NLog.dll" Source="..\Output\$(var.Configuration)\NLog.dll" Vital="yes" KeyPath="no" DiskId="1" />
-                        <File Id="NLog.config" Name="NLog.config" Source="..\Output\$(var.Configuration)\NLog.config" Vital="yes" KeyPath="no" DiskId="1" />
+                        <File Id="NLog.config" Name="NLog.config" Source="..\Output\$(var.Configuration)\NLog.config" Vital="yes" KeyPath="no" DiskId="1" PatchIgnore="yes"/>
                         <File Id="Newtonsoft.Json.Net35.dll" Name="Newtonsoft.Json.Net35.dll" Source="..\Output\$(var.Configuration)\Newtonsoft.Json.Net35.dll" Vital="yes" KeyPath="no" DiskId="1" />
                         <File Id="winlog.exe.config" Name="winlog.exe.config" Source="..\Output\$(var.Configuration)\winlog.exe.config" Vital="yes" KeyPath="no" DiskId="1" />
                         <File Id="winlog.exe" Name="winlog.exe" Source="..\Output\$(var.Configuration)\winlog.exe" Vital="yes" KeyPath="yes" DiskId="1" />
+                        <File Id="NLog.Syslog.Extension.dll" Name="NLog.Syslog.Extension.dll" Source="..\Output\$(var.Configuration)\NLog.Syslog.Extension.dll" Vital="yes" KeyPath="no" DiskId="1"/>
                       
                       <util:XmlFile Id="SetPaperTrailAddress"
                                     Action="setValue"
@@ -38,30 +39,22 @@
                                     Value="udp://[CPTSERVER]:[CPTPORT]"
                                     Sequence="1"
                                     Name="address"  />
-
-                      <util:XmlFile Id="SetPaperTrailOn"
-                                      Action="setValue"
-                                      ElementPath="//rules/logger[\[]@writeTo='PaperTrailTarget'[\]]"
-                                      File="[#NLog.config]"
-                                      Value="[CPTLEVEL]"
-                                      Sequence="2"
-                                      Name="minLevel"  />
-                      
+             
                       <util:XmlFile Id="SetLocalSyslogServer"
                                     Action="setValue"
                                     ElementPath="//target[\[]@name='LocalSyslogTarget'[\]]"
                                     File="[#NLog.config]"
                                     Value="udp://[CLOCALSERVER]:[CLOCALPORT]"
-                                    Sequence="1"
+                                    Sequence="2"
                                     Name="address"  />
 
-                      <util:XmlFile Id="SetLocalSyslogServerOn"
+                      <util:XmlFile Id="TurnOnTarget"
                                       Action="setValue"
-                                      ElementPath="//rules/logger[\[]@writeTo='LocalSyslogTarget'[\]]"
+                                      ElementPath="//rules/logger[\[]@name='*'[\]]"
                                       File="[#NLog.config]"
-                                      Value="[CLOCALLEVEL]"
-                                      Sequence="2"
-                                      Name="minLevel"  />
+                                      Value="[LOGTO]"
+                                      Sequence="3"
+                                      Name="writeTo"  />
                       
                       <ServiceInstall Id="ServiceInstaller"
                                       Type="ownProcess"
@@ -85,7 +78,6 @@
                 </Directory>
             </Directory>
         </Directory>
-      
         <Feature Id="ProductFeature" Title="WindLogService" Level="1">
             <ComponentRef Id="WinLogService" />
         </Feature>
@@ -93,15 +85,14 @@
         <!-- Config Properties -->
       <Property Id="CPTPORT" Value ="514"/>
       <Property Id="CPTSERVER" Value="logs.papertrailapp.com"/>
-      <Property Id="CLOCALSERVER" Value="127.0.0.1"/>
+      <Property Id="CLOCALSERVER" Value="logs"/>
       <Property Id="CLOCALPORT" Value="514"/>
-      <Property Id="CLOCALLEVEL" Value="off"/>
-      <Property Id="CPTLEVEL" Value="off"/>
+      <Property Id="LOGTO" Value="LocalSyslogTarget"/>
       
         <!-- Default installer properties used for configuration -->
         <SetProperty Id="LocalSyslogPort" Value="514" Before="AppSearch" />
         <SetProperty Id="PaperTrailPort" Value="514" Before="AppSearch" />
-        <SetProperty Id="LocalSyslogServer" Value="127.0.0.1" Before="AppSearch" />
+        <SetProperty Id="LocalSyslogServer" Value="logs" Before="AppSearch" />
         <SetProperty Id="LocalChecked" Value="1" Before="AppSearch" />
         <WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\License.rtf" />
         <WixVariable Id="WixUIBannerBmp" Value="$(var.ProjectDir)\banner.bmp" />
@@ -128,7 +119,7 @@
             <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">NOT Installed AND NOT PATCH</Publish>
             <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">Installed AND PATCH</Publish>
             <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
-            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="SetupTypeDlg" Order="2">LicenseAccepted = "1"</Publish>
+            <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="Dlg_LogConfig" Order="2">LicenseAccepted = "1"</Publish>
             <Publish Dialog="SetupTypeDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg">1</Publish>
             <Publish Dialog="SetupTypeDlg" Control="TypicalButton" Event="NewDialog" Value="Dlg_LogConfig">1</Publish>
             <Publish Dialog="SetupTypeDlg" Control="CustomButton" Event="NewDialog" Value="CustomizeDlg">1</Publish>
@@ -136,21 +127,17 @@
           
           <Publish Dialog="Dlg_LogConfig" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
           <Publish Dialog="Dlg_LogConfig" Control="Cancel" Event="NewDialog" Value="CancelDlg">1</Publish>
-          <Publish Dialog="Dlg_LogConfig" Control="Next" Property="CPTLEVEL" Value="info">PTChecked = "1"</Publish>
-          <Publish Dialog="Dlg_LogConfig" Control="Next" Property="CLOCALLEVEL" Value="info">LocalChecked = "1"</Publish>
-          <Publish Dialog="Dlg_LogConfig" Control="Next" Property="CLOCALLEVEL" Value="off"><![CDATA[LocalChecked <> "1" ]]></Publish>
-          <Publish Dialog="Dlg_LogConfig" Control="Next" Property="CPTLEVEL" Value="off"><![CDATA[PTChecked <> "1" ]]></Publish>
-          <Publish Dialog="Dlg_LogConfig" Control="Next" Property="CPTSERVER" Value="logs.papertrailapp.com"/>
-          <Publish Dialog="Dlg_LogConfig" Control="Next" Property="CPTPORT" Value="[PaperTrailPort]"/>
-          <Publish Dialog="Dlg_LogConfig" Control="Next" Property="CLOACLSERVER" Value="[LocalSyslogServer]"/>
-          <Publish Dialog="Dlg_LogConfig" Control="Next" Property="CLOCALPORT" Value="[LocalSyslogPort]"/>
+          <Publish Dialog="Dlg_LogConfig" Control="Next" Property="LOGTO" Value="PaperTrailTarget"><![CDATA[LocalChecked <> "1" and PTChecked = "1" ]]></Publish>
+          <Publish Dialog="Dlg_LogConfig" Control="Next" Property="LOGTO" Value="LocalSyslogTarget"><![CDATA[PTChecked <> "1" and LocalChecked = "1" ]]></Publish>
+          <Publish Dialog="Dlg_LogConfig" Control="Next" Property="LOGTO" Value="LocalSyslogTarget,PaperTrailTarget"><![CDATA[PTChecked = "1" and LocalChecked = "1" ]]></Publish>
+
           
           
           <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="1">WixUI_InstallMode = "Change"</Publish>
-            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg" Order="2">WixUI_InstallMode = "InstallCustom"</Publish>
+            <Publish Dialog="CustomizeDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="2">WixUI_InstallMode = "InstallCustom"</Publish>
             <Publish Dialog="CustomizeDlg" Control="Next" Event="NewDialog" Value="Dlg_LogConfig">1</Publish>
-            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="1">WixUI_InstallMode = "InstallCustom"</Publish>
-            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="SetupTypeDlg" Order="2">WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"</Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="Dlg_LogConfig" Order="1">WixUI_InstallMode = "InstallCustom"</Publish>
+            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="Dlg_LogConfig" Order="2">WixUI_InstallMode = "InstallTypical" OR WixUI_InstallMode = "InstallComplete"</Publish>
             <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="CustomizeDlg" Order="3">WixUI_InstallMode = "Change"</Publish>
             <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg" Order="4">WixUI_InstallMode = "Repair" OR WixUI_InstallMode = "Remove"</Publish>
             <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">WixUI_InstallMode = "Update"</Publish>

@@ -17,11 +17,11 @@
       <Control Type="Text" Id="LogLocalLabel" Width="134" Height="13" X="45" Y="68">
         <Text>Log to a local syslog server</Text>
       </Control>
-      <Control Type="Edit" Id="LocalSyslogServerEdit" Width="106" Height="15" X="116" Y="86" Text="127.0.0.1" Property="LocalSyslogServer">
+      <Control Type="Edit" Id="LocalSyslogServerEdit" Width="106" Height="15" X="116" Y="86" Text="127.0.0.1" Property="CLOCALSERVER">
         <Condition Action="enable">LocalChecked = "1"</Condition>
         <Condition Action="disable"><![CDATA[LocalChecked <> "1" ]]></Condition>
       </Control>
-      <Control Type="Edit" Id="LocalSyslogServerPort" Width="50" Height="15" X="262" Y="86" Text="514" Property="LocalSyslogPort">
+      <Control Type="Edit" Id="LocalSyslogServerPort" Width="50" Height="15" X="262" Y="86" Text="514" Property="CLOCALPORT">
         <Condition Action="enable">LocalChecked = "1"</Condition>
         <Condition Action="disable"><![CDATA[LocalChecked <> "1" ]]></Condition>
       </Control>
@@ -38,7 +38,7 @@
       <Control Type="Text" Id="PTPortLabel" Width="19" Height="17" X="75" Y="158">
         <Text>Port</Text>
       </Control>
-      <Control Type="Edit" Id="PTPort" Width="50" Height="15" X="105" Y="158" Text="514" Property="PaperTrailPort">
+      <Control Type="Edit" Id="PTPort" Width="50" Height="15" X="105" Y="158" Text="514" Property="CPTPORT">
         <Condition Action="enable">PTChecked = "1"</Condition>
         <Condition Action="disable"><![CDATA[PTChecked <> "1" ]]></Condition>
       </Control>

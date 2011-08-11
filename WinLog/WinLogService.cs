@@ -20,6 +20,11 @@ namespace WinLog
             this.ServiceName = "WinLogd";
         }
 
+        public void Start(string[] args)
+        {
+            this.OnStart(args);
+        }
+
         protected override void OnStart(string[] args)
         {
             
@@ -95,6 +100,8 @@ namespace WinLog
             //Generate an NLog Event Object
             Logger log = LogManager.GetCurrentClassLogger();
             LogEventInfo theEvent = new LogEventInfo(level, e.Entry.Source.Replace(" ", "-"), message);
+
+            theEvent.Properties["EventID"] = e.Entry.InstanceId.ToString();
 
             //Add JSON properties to the event
             theEvent.Properties["JSON"] = JsonConvert.SerializeObject(stubEvent);

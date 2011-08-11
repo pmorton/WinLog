@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.netfx35", "External\NL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Newtonsoft.Json.Net35", "External\Json.Net\Source\Src\Newtonsoft.Json\Newtonsoft.Json.Net35.csproj", "{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NLog.Syslog.Extension", "NLog.Syslog.Extension\NLog.Syslog.Extension.csproj", "{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -84,6 +86,18 @@ Global
 		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}.Release|x64.ActiveCfg = Release|Any CPU
 		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}.Release|x64.Build.0 = Release|Any CPU
 		{A9AE40FF-1A21-414A-9FE7-3BE13644CC6D}.Release|x86.ActiveCfg = Release|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Release|x64.ActiveCfg = Release|Any CPU
+		{5C9B87F9-0ACC-4F95-A4F6-5E05EDD361A0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
